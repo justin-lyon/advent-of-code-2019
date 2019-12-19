@@ -1,8 +1,8 @@
 const codes = require('./codes')
 
-const restoreCodes = () => {
-  codes[1] = 12
-  codes[2] = 2
+const restoreCodes = (input1 = 12, input2 = 2) => {
+  codes[1] = input1
+  codes[2] = input2
 }
 
 const addCode = [1,0,0,0,99] // => 1 + 1 = 2
@@ -30,13 +30,28 @@ const execute = ([operator, pos1, pos2, target], code) => {
   code[target] = value
 }
 
-const codeReader = code => {
+const codeReader = ([...code]) => {
   for (let i = 4; i < code.length; i+=4) {
-    const codeLine = code.slice(i - 4, i)
-    execute(codeLine, code)
+    const instruction = code.slice(i - 4, i)
+    execute(instruction, code)
   }
+  return code[0]
 }
 
 restoreCodes()
-codeReader(codes)
-console.log('codes[0]', codes[0])
+const intCode = codeReader(codes)
+console.log('intCode', intCode)
+
+const findGravitySetting = () => {
+  for (let noun = 0; noun < 100; noun++) {
+    for (let verb = 0; verb < 100; verb++) {
+      restoreCodes(noun, verb)
+      const value = codeReader(codes)
+
+      if (value === 19690720) return 100 * noun + verb
+    }
+  }
+}
+
+const gravSetting = findGravitySetting()
+console.log('gravSetting', gravSetting)
