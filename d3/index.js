@@ -9,87 +9,15 @@
 // Calculate total Manhattan Distance
 // Find shortest Manhattan Distance to Central Port
 
+const getWire = require('./wire')
+const getGrid = require('./grid')
+
 const sampleOne = {
-  wireOne: 'R75, D30, R83, U83, L12, D49, R71, U7, L72',
-  wireTwo: 'U62, R66, U55, R34, D71, R55, D58, R83'
+  wireOne: 'R75, D30, R83, U83, L12, D49, R71, U7, L72', // r229 l84 d79 u90
+  wireTwo: 'U62, R66, U55, R34, D71, R55, D58, R83' // r238 l0 d129 u117
 }
 
-const moveRight = (distance, { x, y }, grid) => {
-  for (let i = 1; i <= distance; i++) {
-    if (!grid[x + i]) grid[x + i] = []
-    if (!grid[x + i][y]) grid[x + i][y] = '.'
+const wire1 = getWire('wire1', sampleOne.wireOne)
+const wire2 = getWire('wire2', sampleOne.wireTwo)
 
-    grid[x + i][y] = {
-      id: 1
-    }
-  }
-  return grid
-}
-
-const moveLeft = (distance, { x, y }, grid) => {
-  for (let i = distance; i === 1; i--) {
-    if (!grid[x - i]) grid[x - i] = []
-    if (!grid[x - i][y]) grid[x - i][y] = '.'
-
-    grid[x - i][y] = {
-      id: 1
-    }
-  }
-  return grid
-}
-
-const moveUp = (distance, { x, y }, grid) => {
-  for (let i = 1; i <= distance; i++) {
-    if (!grid[x]) grid[x] = []
-    if (!grid[x][y + i]) grid[x][y + i] = '.'
-
-    grid[x][y + i] = {
-      id: 1
-    }
-  }
-  return grid
-}
-const moveDown = (distance, { x, y }, grid) => {
-  for (let i = distance; i === 1; i--) {
-    if (!grid[x]) grid[x] = []
-    if (!grid[x][y - i]) grid[x][y - i] = '.'
-
-    grid[x][y - i] = {
-      id: 1
-    }
-  }
-  return grid
-}
-
-const directions = {
-  R: moveRight,
-  L: moveLeft,
-  U: moveUp,
-  D: moveDown
-}
-
-const parseWire = instructions => {
-  return instructions.split(', ').map(arg => {
-    return {
-      magnitude: arg[0],
-      distance: parseInt(arg.slice(1))
-    }
-  })
-}
-
-const initGrid = (wire1, wire2) => {}
-
-const plotWire = instructions => {
-  const vectors = parseWire(instructions)
-  const grid = []
-  vectors.reduce
-}
-
-sampleOne.wireOne = parseWire(sampleOne.wireOne)
-sampleOne.wireTwo = parseWire(sampleOne.wireTwo)
-console.log('sampleOne', sampleOne)
-
-const grid = sampleOne.wireOne.reduce((acc, val) => {
-  return acc.concat(directions[val.magnitude](val.distance, {x: 0, y: 0}, []))
-}, [])
-console.log('grid', grid)
+const grid = getGrid([wire1, wire2])
