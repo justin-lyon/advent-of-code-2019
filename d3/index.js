@@ -31,7 +31,7 @@ const getSample2 = () => {
   getGrid([wire1, wire2])
 }
 
-getInput = () => {
+const getInput = () => {
   console.log('-- input -- => ?')
 
   const wire1 = getWire('wire1', input.wireOne)
