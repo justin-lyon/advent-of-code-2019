@@ -11,13 +11,35 @@
 
 const getWire = require('./wire')
 const getGrid = require('./grid')
+const { sampleOne, sampleTwo, input } = require('./input')
 
-const sampleOne = {
-  wireOne: 'R75, D30, R83, U83, L12, D49, R71, U7, L72', // r229 l84 d79 u90
-  wireTwo: 'U62, R66, U55, R34, D71, R55, D58, R83' // r238 l0 d129 u117
+const getSample1 = () => {
+  console.log('sample 1 => 159')
+
+  const wire1 = getWire('wire1', sampleOne.wireOne)
+  const wire2 = getWire('wire2', sampleOne.wireTwo)
+
+  getGrid([wire1, wire2])
 }
 
-const wire1 = getWire('wire1', sampleOne.wireOne)
-const wire2 = getWire('wire2', sampleOne.wireTwo)
+const getSample2 = () => {
+  console.log('sample 2 => 135')
 
-const grid = getGrid([wire1, wire2])
+  const wire1 = getWire('wire1', sampleTwo.wireOne)
+  const wire2 = getWire('wire2', sampleTwo.wireTwo)
+
+  getGrid([wire1, wire2])
+}
+
+getInput = () => {
+  console.log('-- input -- => ?')
+
+  const wire1 = getWire('wire1', input.wireOne)
+  const wire2 = getWire('wire2', input.wireTwo)
+
+  getGrid([wire1, wire2])
+}
+
+getSample1()
+getSample2()
+getInput()

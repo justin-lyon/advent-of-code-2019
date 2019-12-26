@@ -1,86 +1,90 @@
-const getCoordOffset = (coords) => {
-  return coords.reduce((acc, coord) => {
-    if (coord.x < acc.x) acc.x = coord.x
-    if (coord.y < acc.y) acc.y = coord.y
-    return acc
-  }, { x: 0, y: 0 })
+const moveRight = ({ x, y }) => {
+  x++
+  return { x, y }
 }
 
-const getWiresOffset = (wires) => {
-  const offset = wires.reduce((acc, wire) => {
-    const coord = getCoordOffset(wire.coords)
-    if (coord.x < acc.x) acc.x = coord.x
-    if (coord.y < acc.y) acc.y = coord.y
-    return acc
-  }, { x: 0, y: 0 })
-
-  offset.x = Math.abs(offset.x)
-  offset.y = Math.abs(offset.y)
-  return offset
+const moveLeft = ({ x, y }) => {
+  x--
+  return { x, y }
 }
 
-const applyOffset = (wires, offset) => {
-  return wires.map(w => {
-    w.coords = w.coords.map(c => {
-      c.x += offset.x
-      c.y += offset.y
-      return c
+const moveUp = ({ x, y }) => {
+  y++
+  return { x, y }
+}
+
+const moveDown = ({ x, y }) => {
+  y--
+  return { x, y }
+}
+
+const move = {
+  R: moveRight,
+  L: moveLeft,
+  U: moveUp,
+  D: moveDown
+}
+
+const incrementPos = (vector, pos) => {
+  return move[vector.magnitude](pos)
+}
+
+const plotWire = wire => {
+  const start = { x: 0, y: 0 }
+  let oldPos = { ...start }
+  const coords = [].concat(...wire.vectors.map(v => {
+    const vectorCoords = []
+    for (let i = 1; i <= v.distance; i++) {
+      const vPos = incrementPos(v, oldPos)
+      oldPos = vPos
+      vectorCoords.push(vPos)
+    }
+    return vectorCoords
+  }))
+  return {
+    name: wire.name,
+    coords
+  }
+}
+
+const findIntersections = wires => {
+  const walkedTiles = new Map()
+  const coords = new Set()
+  const intersections = []
+  wires.forEach(w => {
+    w.coords.forEach(c => {
+      const tile = JSON.stringify(c)
+      if (coords.has(tile) && walkedTiles.get(tile) !== w.name) {
+        intersections.push(c)
+      } else {
+        coords.add(tile)
+        walkedTiles.set(tile, w.name)
+      }
     })
-    return w
+  })
+  return intersections
+}
+
+const findManhattanDistances = intersections => {
+  return intersections.map(coord => {
+    const distance = Math.abs(coord.x) + Math.abs(coord.y)
+    return {
+      distance,
+      coord
+    }
   })
 }
 
-const normalizeWires = ([...wires]) => {
-  const offset = getWiresOffset(wires)
-  return applyOffset(wires, offset)
-}
-
-const getBounds = wires => {
-  const xCoords = wires
-    .reduce((acc, wire) => {
-      return acc.concat(wire.coords)
-    }, [])
-    .map(c => c.x)
-  const yCoords = wires
-    .reduce((acc, wire) => {
-      return acc.concat(wire.coords)
-    }, [])
-    .map(c => c.y)
-
-  return {
-    x: Math.max(...xCoords),
-    y: Math.max(...yCoords)
-  }
-}
-
-const initGrid = bounds => {
-  const grid = []
-
-  for (let x = 0; x < bounds.x; x++) {
-    grid[x] = []
-    for (let y = 0; x < bounds.y; y++) {
-      grid[x][y] = {
-        img: '.'
-      }
-    }
-  }
-
-  return {
-    bounds,
-    nodes: grid
-  }
-}
-
 const getGrid = ([...wires]) => {
-  const normalWires = normalizeWires(wires)
-  const bounds = getBounds(normalWires)
+  const plottedWires = wires.map(w => plotWire(w))
+  // console.log('names', names)
+  const intersections = findIntersections(plottedWires)
+  // console.log('intersections', intersections)
+  const distances = findManhattanDistances(intersections)
+  console.log(distances)
 
-  console.log('wires', normalWires.map(w => w.coords))
-
-  console.log('bounds', bounds)
-
-  const grid = initGrid(bounds)
-  console.log('grid', grid)
+  const closest = Math.min(...distances.map(d => d.distance))
+  console.log('closest', closest)
 }
 
 module.exports = getGrid
