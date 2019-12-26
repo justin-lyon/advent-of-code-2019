@@ -31,34 +31,33 @@ const incrementPos = (vector, pos) => {
 
 const plotWire = wire => {
   const start = { x: 0, y: 0 }
+  let totalDistance = 0
   let oldPos = { ...start }
   const coords = [].concat(...wire.vectors.map(v => {
     const vectorCoords = []
     for (let i = 1; i <= v.distance; i++) {
+      totalDistance++
       const vPos = incrementPos(v, oldPos)
+      vPos.distance = totalDistance
       oldPos = vPos
       vectorCoords.push(vPos)
     }
     return vectorCoords
   }))
-  return {
-    name: wire.name,
-    coords
-  }
+  wire.coords = coords
+  return wire
 }
 
 const findIntersections = wires => {
-  const walkedTiles = new Map()
-  const coords = new Set()
+  const walkedNodes = new Map()
   const intersections = []
   wires.forEach(w => {
     w.coords.forEach(c => {
-      const tile = JSON.stringify(c)
-      if (coords.has(tile) && walkedTiles.get(tile) !== w.name) {
+      const node = `${c.x},${c.y}`
+      if (walkedNodes.has(node) && walkedNodes.get(node) !== w.name) {
         intersections.push(c)
       } else {
-        coords.add(tile)
-        walkedTiles.set(tile, w.name)
+        walkedNodes.set(node, w.name)
       }
     })
   })
@@ -85,6 +84,9 @@ const getGrid = ([...wires]) => {
 
   const closest = Math.min(...distances.map(d => d.distance))
   console.log('closest', closest)
+
+  const shortest = Math.min(...distances.map(d => d.coord.distance))
+  console.log('shortest', shortest)
 }
 
 module.exports = getGrid

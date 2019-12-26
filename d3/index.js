@@ -42,4 +42,4 @@ const getInput = () => {
 
 getSample1()
 getSample2()
-getInput()
+// getInput()
