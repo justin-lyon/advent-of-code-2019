@@ -32,7 +32,7 @@ const getSample2 = () => {
 }
 
 const getInput = () => {
-  console.log('-- input -- => ?')
+  console.log('-- input -- => 1285')
 
   const wire1 = getWire('wire1', input.wireOne)
   const wire2 = getWire('wire2', input.wireTwo)
@@ -42,4 +42,4 @@ const getInput = () => {
 
 getSample1()
 getSample2()
-// getInput()
+getInput()
