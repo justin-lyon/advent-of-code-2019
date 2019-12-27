@@ -33,13 +33,13 @@ const tests = [
   isAscending
 ]
 
-const test = password => {
+const isValid = password => {
   return tests.map(t => t(password)).every(t => t === true)
 }
 
 module.exports = {
   bound,
-  test,
+  isValid,
   isSixDigits,
   isInRange,
   hasAdjacent,
